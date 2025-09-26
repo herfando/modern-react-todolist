@@ -1,64 +1,45 @@
-// src/components/pages/home/Home.tsx
+// src/components/container/TodoList/TodoList.tsx (FULL CODE - DUMMY DENGAN PROPS)
+
 import React from 'react';
-import { useTodos } from '../../../hooks/useTodos';
-import TodoForm from '../../container/TodoForm/TodoForm';
-import TodoList from '../../container/TodoList/TodoList';
+// WAJIB: Import type Todo (pastikan path ini benar)
+import type { Todo } from '../../../types/todo'; 
 
-const Loader: React.FC = () => (
-    <div className="text-center p-10">
-        <p className="text-lg text-indigo-600 font-medium">Memuat tugas...</p>
-    </div>
-);
+// DEFINISI PROPS WAJIB
+interface TodoListProps {
+    // Memastikan TodoList menerima array Todo
+    todos: Todo[];
+    // Memastikan TodoList menerima handler untuk update status
+    onUpdateStatus: (id: string, newStatus: boolean) => void;
+}
 
-const Home: React.FC = () => {
-  // Ambil data dan handler dari custom hook (useTodos)
-  const { todos, isLoading, isError, updateTodo } = useTodos();
-
-  // FUNGSI WRAPPER PERBAIKAN: 
-  // Menerima dua argumen dari TodoItem dan mengemasnya menjadi satu object
-  // sesuai kebutuhan TanStack Query mutate function.
-  const handleUpdateStatus = (id: string, newStatus: boolean) => {
-      // Panggil updateTodo (mutate) dengan format object { id, isCompleted } yang benar
-      updateTodo({ id: id, isCompleted: newStatus }); 
-  };
-
-  // DEBUGGING: Anda bisa melihat array data di console
-  console.log("Data Todos yang diterima di Home.tsx:", todos); 
-
-  return (
-    <div className="p-4 sm:p-8 max-w-xl mx-auto bg-white min-h-screen shadow-lg">
-      <h1 className="text-4xl font-extrabold mb-8 text-gray-800 text-center">
-        Todo List Challenge 8
-      </h1>
-      
-      <TodoForm />
-      
-      <div className="mt-8">
-        {/* Conditional Rendering: Loading, Error, atau List */}
-        
-        {isLoading && <Loader />} 
-        
-        {isError && (
-            <p className="text-red-500 text-center p-4 border border-red-200 bg-red-50 rounded-lg">
-                ❌ Gagal memuat data. Periksa Token JWT di client.ts.
-            </p>
-        )}
-        
-        {/* Tampilkan List dengan fungsi wrapper yang baru */}
-        {!isLoading && !isError && todos && todos.length > 0 && (
-          // Meneruskan fungsi wrapper yang sudah benar tipenya
-          <TodoList todos={todos} onUpdateStatus={handleUpdateStatus} /> 
-        )}
-
-        {/* Empty State */}
-        {!isLoading && !isError && todos && todos.length === 0 && (
-          <p className="text-center text-gray-500 p-10 border border-dashed rounded-lg mt-4">
-            🎉 Semua tugas selesai! Tambahkan yang pertama.
-          </p>
-        )}
-      </div>
-    </div>
-  );
+const TodoList: React.FC<TodoListProps> = ({ todos, onUpdateStatus }) => {
+    // Tambahkan styling di sini untuk memastikan Dark Mode bekerja
+    return (
+        <div className="space-y-3 mt-6">
+            <h2 className="text-xl font-bold text-gray-200 mb-4">Daftar Tugas Aktif</h2>
+            {todos.length === 0 ? (
+                 <p className="text-gray-400">Tidak ada tugas yang terdaftar.</p>
+            ) : (
+                todos.map((todo) => (
+                    <div key={todo.id} className="p-4 bg-gray-800 rounded-lg shadow-xl flex justify-between items-center border border-gray-700">
+                        
+                        <span className={`text-lg ${todo.isCompleted ? 'line-through text-gray-500' : 'text-white'}`}>
+                            {todo.title} - Prioritas: {todo.priority}
+                        </span>
+                        
+                        <button 
+                            onClick={() => onUpdateStatus(todo.id, !todo.isCompleted)}
+                            className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors 
+                                ${todo.isCompleted ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} 
+                                text-white`}
+                        >
+                            {todo.isCompleted ? "Belum Selesai" : "Selesai"}
+                        </button>
+                    </div>
+                ))
+            )}
+        </div>
+    );
 };
 
-export default Home;
+export default TodoList;

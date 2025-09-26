@@ -74,3 +74,5 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onUpdateStatus, onDele
     </div>
   );
 };
+
+export default TodoItem;
