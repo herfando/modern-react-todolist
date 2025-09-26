@@ -1,15 +1,14 @@
-import axios, { type AxiosInstance } from "axios";
+// src/api/client.ts (FULL CODE)
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+import axios from 'axios';
 
-if (!baseURL) {
-  console.warn("[env] VITE_BASE_URL is not set");
-}
-
-export const http: AxiosInstance = axios.create({
-  baseURL: baseURL,
+// Buat instance Axios
+const client = axios.create({
+  baseURL: 'https://api.your-backend.com', // Ganti dengan URL API backend Anda
+  timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
+    'Content-Type': 'application/json',
   },
 });
+
+export default client;

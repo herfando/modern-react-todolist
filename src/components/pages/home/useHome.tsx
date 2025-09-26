@@ -1,6 +1,11 @@
-// this code is for custom hook on home page to call api
-const useHome = () => {
-  return {};
-};
+import { useQuery } from "@tanstack/react-query";
+import { getTodos } from "../../../services/todo.service";
 
-export default useHome;
+export const useHome = () => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getTodos,
+  });
+
+  return { todos: data ?? [], isLoading, isError };
+};

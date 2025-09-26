@@ -1,15 +1,28 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
+// src/providers/AppProvider.tsx (PERUBAHAN UNTUK AUTH)
+
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './AuthContext'; // Import AuthProvider
+
 const queryClient = new QueryClient();
 
-type Props = {
+interface AppProvidersProps {
   children: React.ReactNode;
-};
+}
 
-const AppProvider = ({ children }: Props) => {
+const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    // Membungkus semua provider di satu tempat (Clean Architecture)
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        {/* Tambahkan AuthProvider di sini */}
+        <AuthProvider> 
+          {children}
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
-export default AppProvider;
+export default AppProviders;
