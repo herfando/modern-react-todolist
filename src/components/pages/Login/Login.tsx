@@ -1,85 +1,121 @@
-// src/components/pages/Login/Login.tsx (FULL CODE - FINAL DENGAN LOGIKA)
-
+// src/components/pages/Login/Login.tsx
 import React, { useState } from "react";
-import { useAuth } from '../../../providers/AuthContext'; // Import useAuth dari provider
-import { Link, useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../../../providers/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTheme } from '../../../providers/ThemeProvider'; // Import hook useTheme
 
-// Nama komponen Login
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [isPending, setIsPending] = useState(false);
     
-    // Ambil fungsi login dari AuthContext (GANTI loginUser yang error)
-    const { login } = useAuth(); 
+    const { login } = useAuth();
     const navigate = useNavigate();
+    const { isDarkMode, toggleTheme } = useTheme(); // Gunakan hook useTheme
 
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(""); // Reset error
-        setIsPending(true); // Mulai loading
+        setError("");
+        setIsPending(true);
         
         try {
-            // Panggil fungsi login dari AuthContext
             await login({ email, password });
-            
-            // Redirect ke halaman utama
             navigate("/", { replace: true });
             
         } catch (err: any) {
             console.error(err);
-            // Tampilkan pesan error
             setError(err.response?.data?.message || "Login gagal. Cek kredensial Anda atau koneksi.");
         } finally {
-            setIsPending(false); // Selesai loading
+            setIsPending(false);
         }
     };
 
-    return (
-        // Gunakan Dark Mode styling
-        <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-            <div className="max-w-md w-full p-8 bg-gray-900 rounded-xl shadow-2xl border border-gray-800">
-                <h2 className="text-3xl font-bold text-white mb-6">Login</h2>
-                
-                <form onSubmit={submit} className="space-y-4">
-                    
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-600 focus:ring focus:ring-blue-600/50"
-                        required
-                        disabled={isPending}
-                    />
-                    
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        className="w-full p-4 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-600 focus:ring focus:ring-blue-600/50"
-                        required
-                        disabled={isPending}
-                    />
-                    
-                    {error && <p className="text-red-400 text-center">{error}</p>}
+    const containerClasses = isDarkMode 
+        ? "bg-gray-950 text-white" 
+        : "bg-gray-100 text-gray-900";
 
-                    <button 
-                        type="submit" 
-                        className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600"
-                        disabled={isPending}
-                    >
-                        {isPending ? 'Loading...' : 'Submit'}
-                    </button>
+    const cardClasses = isDarkMode 
+        ? "bg-gray-900 border-gray-800" 
+        : "bg-white border-gray-200";
+
+    const inputClasses = isDarkMode 
+        ? "bg-gray-800 text-white placeholder-gray-500 border-gray-700 focus:border-blue-500" 
+        : "bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300 focus:border-blue-500";
+    
+    const forgotPasswordLinkClasses = isDarkMode
+        ? "text-blue-500 hover:text-blue-400"
+        : "text-blue-600 hover:text-blue-500";
+
+    const buttonClasses = isDarkMode
+        ? "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700"
+        : "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400";
+    
+    return (
+        <div className={`flex flex-col min-h-screen ${containerClasses}`}>
+            
+            {/* Header dengan tombol toggle */}
+            <header className="flex items-center justify-end px-6 py-4 fixed top-0 w-full z-10">
+                <button 
+                    onClick={toggleTheme}
+                    className="p-2 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    aria-label="Toggle theme"
+                >
+                    {isDarkMode ? '🌞' : '🌙'}
+                </button>
+            </header>
+
+            <main className="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8">
+                <div className={`w-full max-w-sm p-8 rounded-lg shadow-xl border ${cardClasses} sm:max-w-md lg:max-w-lg`}>
+                    <h1 className="text-2xl font-bold mb-1">Login</h1>
+                    <p className="text-sm text-gray-500 mb-6">Welcome back! Sign in to your to-do list account.</p>
+
+                    <form onSubmit={submit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Email"
+                                className={`w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-500/50 transition-colors ${inputClasses}`}
+                                required
+                                disabled={isPending}
+                            />
+                        </div>
+
+                        <div>
+                            <div className="flex justify-between items-center mb-1">
+                                <label className="block text-sm font-medium">Password</label>
+                                <a href="#" className={`text-xs ${forgotPasswordLinkClasses}`}>Forgot Password?</a>
+                            </div>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                className={`w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-500/50 transition-colors ${inputClasses}`}
+                                required
+                                disabled={isPending}
+                            />
+                        </div>
+                        
+                        {error && <p className="text-red-500 text-center text-sm">{error}</p>}
+
+                        <button 
+                            type="submit" 
+                            className={`w-full text-white font-semibold py-3 rounded-lg transition-colors duration-300 ${buttonClasses}`}
+                            disabled={isPending}
+                        >
+                            {isPending ? 'Loading...' : 'Login'}
+                        </button>
+                    </form>
                     
-                </form>
-                
-                <p className="text-center text-gray-400 mt-4">
-                    Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
-                </p>
-            </div>
+                    <p className="text-center text-gray-500 mt-6 text-sm">
+                        Don't have an account? <Link to="/register" className={`font-semibold ${forgotPasswordLinkClasses}`}>Register here</Link>
+                    </p>
+                </div>
+            </main>
         </div>
     );
 };
