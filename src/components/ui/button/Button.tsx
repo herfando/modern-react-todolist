@@ -1,16 +1,12 @@
-// src/components/ui/button/Button.tsx (FINAL & STABLE CODE)
 import React from 'react';
 import Loader from '../loader/Loader';
 
 // Definisi props menggunakan React.ComponentPropsWithoutRef
-// Ini adalah cara paling aman untuk mendefinisikan props komponen wrapper
 interface ButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   variant?: 'primary' | 'danger' | 'ghost';
   isLoading?: boolean;
 }
 
-// Komponen Button ditulis sebagai fungsi biasa, bukan React.FC
-// Ini menghindari beberapa masalah ketik yang kadang muncul pada React.FC
 const Button = ({
   children,
   variant = 'primary',
@@ -18,13 +14,19 @@ const Button = ({
   className,
   ...props
 }: ButtonProps) => {
-  const baseStyle = 'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  // Base style yang lebih modern, shadow, dan efek klik
+  const baseStyle = 'inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm shadow-md transition-all duration-300 transform active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantStyles = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-    danger: 'bg-red-500 hover:bg-red-600 text-white',
-    ghost: 'bg-transparent text-gray-400 hover:bg-gray-800',
+    // Primary: Biru, ada shadow
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/50',
+    // Danger: Merah, ada shadow
+    danger: 'bg-red-500 hover:bg-red-600 text-white shadow-red-500/50',
+    // Ghost: Transparan, cocok untuk dark mode
+    ghost: 'bg-transparent text-gray-400 hover:bg-gray-700 border border-gray-700',
   };
+
+  const loaderColor = variant === 'primary' || variant === 'danger' ? 'white' : 'blue';
 
   return (
     <button
@@ -32,7 +34,10 @@ const Button = ({
       disabled={props.disabled || isLoading}
       {...props}
     >
-      {isLoading ? <Loader className="!h-4 !w-4 !border-t-white !border-b-white" /> : children}
+      {/* Loader diatur ukurannya dan warnanya secara terprogram */}
+      {isLoading 
+        ? <Loader className="!h-4 !w-4" color={loaderColor} /> 
+        : children}
     </button>
   );
 };
