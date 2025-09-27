@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from '../../../providers/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTheme } from '../../../providers/ThemeProvider'; // Import hook useTheme
+import { useTheme } from '../../../providers/ThemeProvider';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     
     const { login } = useAuth();
     const navigate = useNavigate();
-    const { isDarkMode, toggleTheme } = useTheme(); // Gunakan hook useTheme
+    const { isDarkMode, toggleTheme } = useTheme();
 
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,6 +31,7 @@ const Login: React.FC = () => {
         }
     };
 
+    // Kelas untuk Dark Mode dan Light Mode
     const containerClasses = isDarkMode 
         ? "bg-gray-950 text-white" 
         : "bg-gray-100 text-gray-900";
@@ -40,16 +41,16 @@ const Login: React.FC = () => {
         : "bg-white border-gray-200";
 
     const inputClasses = isDarkMode 
-        ? "bg-gray-800 text-white placeholder-gray-500 border-gray-700 focus:border-blue-500" 
-        : "bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300 focus:border-blue-500";
+        ? "bg-gray-800 text-white placeholder-gray-500 border-gray-700 focus:border-blue-500 focus:ring-blue-500/50" 
+        : "bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300 focus:border-blue-500 focus:ring-blue-500/50";
     
     const forgotPasswordLinkClasses = isDarkMode
         ? "text-blue-500 hover:text-blue-400"
         : "text-blue-600 hover:text-blue-500";
 
     const buttonClasses = isDarkMode
-        ? "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700"
-        : "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400";
+        ? "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed";
     
     return (
         <div className={`flex flex-col min-h-screen ${containerClasses}`}>
@@ -78,7 +79,7 @@ const Login: React.FC = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Email"
-                                className={`w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-500/50 transition-colors ${inputClasses}`}
+                                className={`w-full p-3 rounded-lg border focus:ring-2 transition-colors ${inputClasses}`}
                                 required
                                 disabled={isPending}
                             />
@@ -94,7 +95,7 @@ const Login: React.FC = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"
-                                className={`w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-500/50 transition-colors ${inputClasses}`}
+                                className={`w-full p-3 rounded-lg border focus:ring-2 transition-colors ${inputClasses}`}
                                 required
                                 disabled={isPending}
                             />
