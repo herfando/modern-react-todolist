@@ -1,26 +1,22 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../providers/AuthContext'; // PERBAIKAN PATH
-import { useTheme } from '../../../providers/ThemeProvider'; // PERBAIKAN PATH
+import { useAuth } from '../../../providers/AuthContext';
+import { useTheme } from '../../../providers/ThemeProvider';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 
 // --- Komponen SVG Icon (Lucide Icons) ---
-// Ikon Pencarian
 const SearchIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.3-4.3" />
     </svg>
 );
-
-// Ikon Pengaturan
 const SettingsIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.44a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v.44a2 2 0 0 1-2 2v.44a2 2 0 0 0-2 2h.44a2 2 0 0 1 2 2v.44a2 2 0 0 0 2 2h.44a2 2 0 0 1 2 2v.44a2 2 0 0 0 2 2h.44a2 2 0 0 1 2-2v-.44a2 2 0 0 0 2-2h.44a2 2 0 0 1 2-2v-.44a2 2 0 0 0 2-2h-.44a2 2 0 0 1-2-2v-.44a2 2 0 0 0-2-2h-.44a2 2 0 0 1-2-2v-.44a2 2 0 0 0-2-2h-.44a2 2 0 0 1-2-2z" />
         <circle cx="12" cy="12" r="3" />
     </svg>
 );
-
-// Ikon Menu Tiga Titik
 const MoreHorizontalIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <circle cx="12" cy="12" r="1" />
@@ -28,16 +24,12 @@ const MoreHorizontalIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
         <circle cx="5" cy="12" r="1" />
     </svg>
 );
-
-// Ikon Tambah (Plus)
 const PlusIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M12 5v14" />
         <path d="M5 12h14" />
     </svg>
 );
-
-// Ikon Checklist (Centang)
 const CheckCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M22 11.08V12a10 10 0 1 1-5.69-8.91" />
@@ -45,8 +37,6 @@ const CheckCircleIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
         <path d="m9 12 2 2 4-4" />
     </svg>
 );
-
-// Ikon Dark/Light Mode (Sama seperti Register.tsx)
 const MoonIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
@@ -65,9 +55,28 @@ const SunIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
         <path d="m19.07 4.93-1.41 1.41" />
     </svg>
 );
+const XIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+    </svg>
+);
+const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M3 6h18" />
+        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    </svg>
+);
+const EditIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+);
 // ------------------------------------------
 
-// --- MOCK DATA TUGAS ---
+// --- INTERFACE DAN MOCK DATA ---
 interface Task {
     id: number;
     title: string;
@@ -76,20 +85,19 @@ interface Task {
     status: 'Today' | 'Upcoming' | 'Completed';
 }
 
-const mockTasks: Task[] = [
-    { id: 1, title: "Practice about Frontend Developer", dueDate: "Aug 5, 2025", priority: 'Low', status: 'Today' },
-    { id: 2, title: "Complete JavaScript Algorithms", dueDate: "Sep 12, 2025", priority: 'Medium', status: 'Today' },
-    { id: 3, title: "Build a Responsive Website", dueDate: "Oct 20, 2025", priority: 'High', status: 'Today' },
-    { id: 4, title: "Explore CSS Frameworks", dueDate: "Nov 15, 2025", priority: 'Low', status: 'Today' },
-    // Tambahan data untuk Upcoming dan Completed (untuk kebutuhan simulasi)
-    { id: 5, title: "Set up Database Schema", dueDate: "Nov 20, 2025", priority: 'Medium', status: 'Upcoming' },
-    { id: 6, title: "Design Landing Page UI", dueDate: "Nov 25, 2025", priority: 'High', status: 'Upcoming' },
-    { id: 7, title: "Finished React Course (Completed)", dueDate: "Jul 10, 2025", priority: 'Low', status: 'Completed' },
-    { id: 8, title: "Learned Tailwind CSS (Completed)", dueDate: "Jul 15, 2025", priority: 'Medium', status: 'Completed' },
-];
+// Ubah initialTasks menjadi array kosong
+const initialTasks: Task[] = [];
 // ------------------------------------------
 
-// Fungsi bantuan untuk mendapatkan warna prioritas
+// --- KOMPONEN TASK CARD BARU DENGAN FUNGSI EDIT & HAPUS ---
+interface TaskCardProps {
+    task: Task;
+    isDarkMode: boolean;
+    onComplete: (id: number) => void;
+    onDelete: (id: number) => void;
+    onEdit: (id: number) => void;
+}
+
 const getPriorityClasses = (priority: Task['priority'], isDarkMode: boolean) => {
     switch (priority) {
         case 'Low':
@@ -101,20 +109,23 @@ const getPriorityClasses = (priority: Task['priority'], isDarkMode: boolean) => 
     }
 };
 
-// Fungsi Komponen Task Card
-const TaskCard: React.FC<{ task: Task, isDarkMode: boolean }> = ({ task, isDarkMode }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, isDarkMode, onComplete, onDelete, onEdit }) => {
     const priorityClasses = getPriorityClasses(task.priority, isDarkMode);
     const cardBaseClasses = isDarkMode 
         ? 'bg-gray-800 border-gray-700 hover:bg-gray-700/80' 
         : 'bg-white border-gray-200 hover:shadow-md hover:border-blue-300';
-
     const textMutedClasses = isDarkMode ? 'text-gray-400' : 'text-gray-500';
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
         <div className={`p-4 border rounded-xl transition-all duration-300 ${cardBaseClasses} flex justify-between items-start gap-4`}>
             {/* Bagian Kiri (Check dan Judul) */}
             <div className="flex items-start flex-grow min-w-0">
-                <button className={`mt-1 p-0.5 rounded-full transition-colors ${isDarkMode ? 'text-gray-500 hover:text-blue-400' : 'text-gray-400 hover:text-blue-600'}`}>
+                <button 
+                    onClick={() => onComplete(task.id)}
+                    className={`mt-1 p-0.5 rounded-full transition-colors ${isDarkMode ? 'text-gray-500 hover:text-blue-400' : 'text-gray-400 hover:text-blue-600'}`}
+                >
                     <CheckCircleIcon className="w-6 h-6" />
                 </button>
                 <div className="ml-3 min-w-0">
@@ -127,43 +138,58 @@ const TaskCard: React.FC<{ task: Task, isDarkMode: boolean }> = ({ task, isDarkM
             </div>
             
             {/* Bagian Kanan (Menu Opsi) */}
-            <button className={`p-2 rounded-full transition-colors ${isDarkMode ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:bg-gray-100'}`}>
-                <MoreHorizontalIcon className="w-5 h-5" />
-            </button>
+            <div className="relative">
+                <button 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className={`p-2 rounded-full transition-colors ${isDarkMode ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                >
+                    <MoreHorizontalIcon className="w-5 h-5" />
+                </button>
+                {isMenuOpen && (
+                    <div className={`absolute right-0 mt-2 w-40 rounded-md shadow-lg z-10 ${isDarkMode ? 'bg-gray-700' : 'bg-white'}`}>
+                        <button 
+                            onClick={() => { onEdit(task.id); setIsMenuOpen(false); }} 
+                            className={`w-full text-left px-4 py-2 text-sm flex items-center ${isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                        >
+                            <EditIcon className="w-4 h-4 mr-2" /> Edit
+                        </button>
+                        <button 
+                            onClick={() => { onDelete(task.id); setIsMenuOpen(false); }} 
+                            className={`w-full text-left px-4 py-2 text-sm flex items-center ${isDarkMode ? 'text-red-400 hover:bg-red-600 hover:text-white' : 'text-red-600 hover:bg-red-100'}`}
+                        >
+                            <TrashIcon className="w-4 h-4 mr-2" /> Hapus
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
+// ------------------------------------------
 
 // Component Utama Today
 const Today: React.FC = () => {
-    const { user, logout } = useAuth(); // Ambil user dan logout dari AuthContext
+    const { user, logout } = useAuth();
     const { isDarkMode, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
-    // State untuk Mock Data (di sini kita hanya menampilkan Today, tapi menggunakan mockTasks yang lengkap)
-    const [tasks, setTasks] = useState<Task[]>(mockTasks);
-    // State untuk Navigasi - Kita set 'Today' sebagai default
+    const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [activeTab, setActiveTab] = useState<'Today' | 'Upcoming' | 'Completed'>('Today');
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [currentTask, setCurrentTask] = useState<Task | null>(null);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskPriority, setNewTaskPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
+    const [editedTaskTitle, setEditedTaskTitle] = useState('');
+    const [editedTaskPriority, setEditedTaskPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
 
-    // Filter tasks hanya yang berstatus 'Today'
     const todayTasks = tasks.filter(task => task.status === 'Today');
 
-    // Kelas Styling Global
-    const containerClasses = isDarkMode 
-        ? 'bg-[#0B0B0D] text-white' 
-        : 'bg-gray-50 text-gray-900';
-    
-    const cardBgClasses = isDarkMode 
-        ? 'bg-gray-900 shadow-2xl shadow-black/30' 
-        : 'bg-white shadow-xl shadow-gray-200/50';
-
+    const containerClasses = isDarkMode ? 'bg-[#0B0B0D] text-white' : 'bg-gray-50 text-gray-900';
+    const cardBgClasses = isDarkMode ? 'bg-gray-900 shadow-2xl shadow-black/30' : 'bg-white shadow-xl shadow-gray-200/50';
     const headerTextClasses = isDarkMode ? 'text-white' : 'text-gray-900';
     const subHeaderTextClasses = isDarkMode ? 'text-gray-400' : 'text-gray-500';
-
-    const searchInputClasses = isDarkMode 
-        ? 'bg-gray-800 text-white placeholder-gray-500 border-gray-700' 
-        : 'bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-200';
-
+    const searchInputClasses = isDarkMode ? 'bg-gray-800 text-white placeholder-gray-500 border-gray-700' : 'bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-200';
     const tabClasses = (tab: string) => 
         `px-4 py-2 text-sm font-semibold rounded-lg transition-colors duration-300 ${isDarkMode 
             ? (activeTab === tab ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40' : 'text-gray-300 hover:bg-gray-700') 
@@ -175,17 +201,64 @@ const Today: React.FC = () => {
         navigate('/login');
     };
 
+    const handleAddTask = () => {
+        if (newTaskTitle.trim() === '') return;
+        
+        const newTask = {
+            id: Date.now(), // Menggunakan timestamp untuk ID unik
+            title: newTaskTitle,
+            dueDate: format(new Date(), 'MMM d, yyyy'),
+            priority: newTaskPriority,
+            status: 'Today' as 'Today',
+        };
+
+        setTasks([...tasks, newTask]);
+        setShowAddModal(false);
+        setNewTaskTitle('');
+        setNewTaskPriority('Medium');
+    };
+
+    const handleCompleteTask = (id: number) => {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, status: 'Completed' } : task
+        ));
+    };
+
+    const handleDeleteTask = (id: number) => {
+        setTasks(tasks.filter(task => task.id !== id));
+    };
+
+    const handleEditTask = (id: number) => {
+        const taskToEdit = tasks.find(task => task.id === id);
+        if (taskToEdit) {
+            setCurrentTask(taskToEdit);
+            setEditedTaskTitle(taskToEdit.title);
+            setEditedTaskPriority(taskToEdit.priority);
+            setShowEditModal(true);
+        }
+    };
+
+    const handleSaveEdit = () => {
+        if (!currentTask) return;
+
+        setTasks(tasks.map(task => 
+            task.id === currentTask.id ? { 
+                ...task, 
+                title: editedTaskTitle, 
+                priority: editedTaskPriority 
+            } : task
+        ));
+        setShowEditModal(false);
+        setCurrentTask(null);
+    };
+
     return (
         <div className={`min-h-screen transition-colors duration-500 ${containerClasses} p-4 sm:p-8 flex justify-center`}>
-            
-            {/* Kontainer Utama - max-w-lg untuk desktop */}
             <div className={`w-full max-w-lg ${cardBgClasses} rounded-2xl p-6 md:p-8 transition-colors duration-500`}>
                 
-                {/* Header App (To Do & User Menu) */}
                 <header className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">To Do</h1>
                     <div className="flex items-center space-x-2 relative">
-                        {/* Dropdown User (Mockup) */}
                         <div className="group relative">
                             <button className={`flex items-center p-2 rounded-full font-medium ${isDarkMode ? 'text-white bg-gray-700 hover:bg-gray-600' : 'text-gray-800 bg-gray-100 hover:bg-gray-200'}`}>
                                 {user?.name || 'John Doe'} 
@@ -200,8 +273,6 @@ const Today: React.FC = () => {
                                 </button>
                             </div>
                         </div>
-
-                        {/* Theme Toggle */}
                         <button 
                             onClick={toggleTheme}
                             className={`p-2 rounded-full transition-colors duration-300 ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
@@ -212,11 +283,9 @@ const Today: React.FC = () => {
                     </div>
                 </header>
 
-                {/* Judul Utama */}
                 <h2 className={`text-xl font-bold mb-1 ${headerTextClasses}`}>What's on Your Plan Today?</h2>
                 <p className={`text-sm ${subHeaderTextClasses} mb-6`}>Your productivity starts now.</p>
                 
-                {/* Area Pencarian dan Pengaturan */}
                 <div className="flex items-center space-x-3 mb-6">
                     <div className={`relative flex-grow ${searchInputClasses} rounded-xl border`}>
                         <SearchIcon className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
@@ -231,16 +300,12 @@ const Today: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Navigasi Tabs */}
                 <div className="flex space-x-2 overflow-x-auto pb-4 mb-6">
-                    {/* Di sini, kita simulasikan navigasi antar halaman/komponen */}
-                    <button className={tabClasses('Today')} onClick={() => setActiveTab('Today')}>Today</button>
-                    {/* Tombol ini akan mengarahkan ke komponen Upcoming dan Completed sesungguhnya */}
-                    <button className={tabClasses('Upcoming')} onClick={() => navigate('/upcoming')}>Upcoming</button>
-                    <button className={tabClasses('Completed')} onClick={() => navigate('/completed')}>Completed</button>
+                    <button className={tabClasses('Today')}>Today</button>
+                    <button className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors duration-300 ${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'}`} onClick={() => navigate('/upcoming')}>Upcoming</button>
+                    <button className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors duration-300 ${isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-200'}`} onClick={() => navigate('/completed')}>Completed</button>
                 </div>
 
-                {/* Section Judul & Jumlah Item */}
                 <div className="mb-4">
                     <h3 className={`text-lg font-semibold ${headerTextClasses}`}>
                         Today 
@@ -248,34 +313,149 @@ const Today: React.FC = () => {
                             {todayTasks.length} Item
                         </span>
                     </h3>
-                    {/* Tanggal saat ini (Mockup) */}
                     <p className={`text-sm ${subHeaderTextClasses}`}>
-                        {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {format(new Date(), 'MMM d, yyyy')}
                     </p>
                 </div>
 
-                {/* Daftar Tugas */}
                 <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
-                    {todayTasks.map(task => (
-                        <TaskCard key={task.id} task={task} isDarkMode={isDarkMode} />
-                    ))}
-                    
-                    {todayTasks.length === 0 && (
-                        <p className={`text-center py-10 ${subHeaderTextClasses}`}>No tasks found for Today.</p>
+                    {todayTasks.length > 0 ? (
+                        todayTasks.map(task => (
+                            <TaskCard 
+                                key={task.id} 
+                                task={task} 
+                                isDarkMode={isDarkMode} 
+                                onComplete={handleCompleteTask}
+                                onDelete={handleDeleteTask}
+                                onEdit={handleEditTask}
+                            />
+                        ))
+                    ) : (
+                        <p className={`text-center py-10 ${subHeaderTextClasses}`}>Tidak ada tugas untuk hari ini.</p>
                     )}
                 </div>
 
-                {/* Tombol Tambah Tugas */}
                 <div className="mt-8">
-                    <button className={`w-full flex items-center justify-center py-3 rounded-xl transition-all duration-300 transform active:scale-[0.98] ${isDarkMode 
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/50' 
-                        : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-300/50'}`}>
+                    <button 
+                        onClick={() => setShowAddModal(true)}
+                        className={`w-full flex items-center justify-center py-3 rounded-xl transition-all duration-300 transform active:scale-[0.98] ${isDarkMode 
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/50' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-300/50'}`}>
                         <PlusIcon className="w-5 h-5 mr-2" />
                         Add Task
                     </button>
                 </div>
-
             </div>
+
+            {/* Modal Tambah Tugas */}
+            {showAddModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className={`${cardBgClasses} rounded-xl p-6 w-full max-w-sm`}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className={`text-lg font-bold ${headerTextClasses}`}>Add New Task</h3>
+                            <button onClick={() => setShowAddModal(false)} className={`p-1 rounded-full ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-200'}`}>
+                                <XIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <form onSubmit={(e) => { e.preventDefault(); handleAddTask(); }}>
+                            <div className="mb-4">
+                                <label className={`block text-sm font-medium mb-1 ${subHeaderTextClasses}`} htmlFor="taskTitle">Task Title</label>
+                                <input
+                                    type="text"
+                                    id="taskTitle"
+                                    value={newTaskTitle}
+                                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                                    className={`w-full p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${searchInputClasses}`}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className={`block text-sm font-medium mb-1 ${subHeaderTextClasses}`} htmlFor="taskPriority">Priority</label>
+                                <select
+                                    id="taskPriority"
+                                    value={newTaskPriority}
+                                    onChange={(e) => setNewTaskPriority(e.target.value as 'Low' | 'Medium' | 'High')}
+                                    className={`w-full p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${searchInputClasses}`}
+                                >
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setShowAddModal(false)}
+                                    className={`px-4 py-2 rounded-lg font-semibold ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    className="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700"
+                                >
+                                    Add
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            
+            {/* Modal Edit Tugas */}
+            {showEditModal && currentTask && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className={`${cardBgClasses} rounded-xl p-6 w-full max-w-sm`}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className={`text-lg font-bold ${headerTextClasses}`}>Edit Task</h3>
+                            <button onClick={() => setShowEditModal(false)} className={`p-1 rounded-full ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-200'}`}>
+                                <XIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }}>
+                            <div className="mb-4">
+                                <label className={`block text-sm font-medium mb-1 ${subHeaderTextClasses}`} htmlFor="editTitle">Task Title</label>
+                                <input
+                                    type="text"
+                                    id="editTitle"
+                                    value={editedTaskTitle}
+                                    onChange={(e) => setEditedTaskTitle(e.target.value)}
+                                    className={`w-full p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${searchInputClasses}`}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className={`block text-sm font-medium mb-1 ${subHeaderTextClasses}`} htmlFor="editPriority">Priority</label>
+                                <select
+                                    id="editPriority"
+                                    value={editedTaskPriority}
+                                    onChange={(e) => setEditedTaskPriority(e.target.value as 'Low' | 'Medium' | 'High')}
+                                    className={`w-full p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${searchInputClasses}`}
+                                >
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setShowEditModal(false)}
+                                    className={`px-4 py-2 rounded-lg font-semibold ${isDarkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    className="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700"
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
