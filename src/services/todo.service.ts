@@ -1,4 +1,4 @@
-// src/services/todo.service.ts (FULL CODE - FINAL VERSI ANDA)
+
 
 import client from '../api/client';
 import type { Todo, CreateTodoPayload, UpdateTodoPayload } from '../types/todo';
@@ -20,7 +20,7 @@ export const todoService = { // <--- Ekspor objek tunggal ini
 
  // 3. UPDATE Status (U)
  // Fungsi ini akan digunakan oleh useHome.tsx
- updateTodoStatus: async (id: string, payload: UpdateTodoPayload): Promise<Todo> => {   // Asumsi API Anda menerima PATCH untuk update sebagian
+ updateTodoStatus: async (id: string, payload: UpdateTodoPayload): Promise<Todo> => {   
   const response = await client.patch(`${TODO_ENDPOINT}/${id}`, payload);
   return response.data;
  },
