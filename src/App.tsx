@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-// Import semua komponen halaman yang ada di struktur folder Anda
+// 1. Impor semua komponen halaman dari folder pages
 import Today from './components/pages/Today'; 
 import Upcoming from './components/pages/Upcoming'; 
 import Completed from './components/pages/Completed';
@@ -14,35 +14,40 @@ const ProtectedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => 
     const { isAuthenticated, isLoading } = useAuth();
 
     if (isLoading) {
+        // Tampilan loading sementara saat memeriksa status autentikasi
         return <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white text-xl">Loading...</div>;
     }
 
     if (isAuthenticated) {
+        // Jika sudah login, tampilkan komponen yang diminta
         return element;
     }
 
+    // Jika belum login, arahkan ke halaman login
     return <Navigate to="/login" replace />;
 };
 
 const App: React.FC = () => {
     return (
         <Routes>
+            {/* Rute untuk halaman autentikasi */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} /> 
 
-            {/* Rute utama untuk halaman Today yang terproteksi. */}
+            {/* Rute-rute yang dilindungi oleh ProtectedRoute */}
+            {/* Halaman utama (root) akan menampilkan komponen Today */}
             <Route 
                 path="/" 
                 element={<ProtectedRoute element={<Today />} />} 
             />
 
-            {/* Rute untuk halaman Upcoming yang terproteksi. */}
+            {/* Halaman '/upcoming' akan menampilkan komponen Upcoming */}
             <Route 
                 path="/upcoming" 
                 element={<ProtectedRoute element={<Upcoming />} />} 
             />
 
-            {/* Rute untuk halaman Completed yang terproteksi. */}
+            {/* Halaman '/completed' akan menampilkan komponen Completed */}
             <Route 
                 path="/completed" 
                 element={<ProtectedRoute element={<Completed />} />} 
