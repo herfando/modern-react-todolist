@@ -1,14 +1,16 @@
-// src/api/client.ts (FULL CODE)
+import axios from "axios";
 
-import axios from 'axios';
-
-// Buat instance Axios
-const client = axios.create({
-  baseURL: 'https://todolistbeformentee-production.up.railway.app', // Ganti dengan URL API backend Anda
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const api = axios.create({
+  baseURL: "https://todolistbeformentee-production.up.railway.app",
 });
 
-export default client;
+// interceptor untuk otomatis tambahin token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

@@ -1,67 +1,51 @@
-import React from 'react';
-import { useAuth } from '../../../providers/AuthContext';
-import Button from '../../ui/button/Button';
-import TodoForm from '../../container/TodoForm/TodoForm';
-import TodoList from '../../container/TodoList/TodoList'; 
-import Loader from '../../ui/loader/Loader';
-import { useTodos } from '../../../hooks/useTodos';
+import React from "react";
+import type { Todo } from "../../../types/todo";
+import { useTodos } from "../../../hooks/useTodos";
 
-const Home: React.FC = () => {
-  const { user, logout } = useAuth();
-  // Kita tetap mengambil 'todos' di sini hanya untuk logika render kondisional (kosong atau tidak)
-  const { isLoading, error, todos } = useTodos(); 
+interface TodoListProps {
+  todos: Todo[];
+}
 
-  return (
-    <div className="min-h-screen p-4 md:p-8 bg-gray-950 flex flex-col items-center">
-      <div className="w-full max-w-2xl space-y-8">
-        
-        <header className="flex justify-between items-center p-4 bg-gray-900 rounded-xl shadow-lg border border-gray-700">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-400 truncate">
-            Halo, {user?.name || 'Pengguna'}!
-          </h1>
-          <Button variant="ghost" onClick={logout} className="ml-4">
-            Logout
-          </Button>
-        </header>
+const TodoList: React.FC<TodoListProps> = ({ todos }) => {
+  const { toggleTodo, deleteTodo } = useTodos();
 
-        <TodoForm />
-
-        <div className="bg-gray-900 p-6 rounded-xl shadow-lg border border-gray-700 space-y-4">
-            <h2 className="text-xl font-semibold text-white border-b border-gray-700 pb-3">Daftar Tugas</h2>
-            
-            {/* Kita cukup memuat TodoList di sini, dan TodoList akan menangani semua status di dalamnya. */}
-            {/* Opsi 1: Paling Sederhana, biarkan TodoList menangani semua loading/empty state */}
-            {/* Opsi 2 (Yang saya gunakan di bawah): Menggunakan logika loading/empty di Home.tsx juga */}
-
-            {/* Catatan: Karena kita perlu mengecek todos.length untuk EMPTY state, kita tetap harus mengimpor todos dari useTodos di Home.tsx. */}
-            
-            {isLoading && (
-                <div className="flex justify-center p-8">
-                    <Loader />
-                </div>
-            )}
-            
-            {error && ( 
-                <div className="text-red-400 text-center p-4">
-                    Gagal memuat tugas: {error.message}. Coba muat ulang.
-                </div>
-            )}
-
-            {!isLoading && !error && todos.length === 0 && (
-                <div className="text-gray-500 text-center p-4">
-                    Tidak ada tugas saat ini. Tambahkan yang baru di atas!
-                </div>
-            )}
-
-            {/* PERHATIAN UTAMA: MENGHAPUS todos={todos} */}
-            {!isLoading && !error && todos.length > 0 && (
-                <TodoList /> 
-            )}
-        </div>
-
-      </div>
-    </div>
-  );
+  return (
+    <ul className="space-y-3">
+      {todos.map((todo) => (
+        <li
+          key={todo.id}
+          className="flex justify-between items-center p-4 bg-gray-800 rounded-lg border border-gray-700 shadow-sm"
+        >
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodo(todo.id, !todo.completed)}
+              className="w-5 h-5 accent-blue-500"
+            />
+            <div>
+              <p
+                className={`text-lg font-medium ${
+                  todo.completed ? "line-through text-gray-400" : "text-white"
+                }`}
+              >
+                {todo.title}
+              </p>
+              <p className="text-sm text-gray-400">
+                {todo.priority} • {todo.date}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => deleteTodo(todo.id)}
+            className="text-red-400 hover:text-red-500 transition"
+          >
+            Hapus
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
 };
 
-export default Home;
+export default TodoList;
